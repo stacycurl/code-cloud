@@ -1,7 +1,7 @@
 #!/bin/sh
 
 single_histogram() {
-	tr -cs '[:alpha:]' '\n' | sort | sed '/^$/d' | uniq -c | sort -bg
+	tr -cs '[:alpha:]' '\n' | sort | sed -e '/^.\{0,1\}$/d' | uniq -c | sort -bg
 }
 
 histogram() {
