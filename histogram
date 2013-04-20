@@ -17,7 +17,7 @@ histogram() {
 		egrep -v `cat $DIR/stops | tr ' ' '|'`
 	}
 
-	for i in `text_files $*`; do echo $i; cat $i | single_histogram; done | combine
+	for i in `text_files $*`; do cat $i | single_histogram; done | combine
 }
 
 git_additions() {
