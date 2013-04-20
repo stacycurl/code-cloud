@@ -1,0 +1,32 @@
+#!/bin/sh
+
+single_histogram() {
+	tr -cs '[:alpha:]' '\n' | sort | sed '/^$/d' | uniq -c | sort -bg
+}
+
+histogram() {
+	text_files() {
+		find $* -type f -print | xargs file | grep ASCII | cut -d: -f1
+	}
+
+	combine() {
+		awk '{ count[$2] += $1 } END { for(elem in count) print count[elem], elem }' $* | sort -bg | remove_stop_words
+	}
+
+	remove_stop_words() {
+		egrep -v `cat $DIR/stops | tr ' ' '|'`
+	}
+
+	for i in `text_files $*`; do echo $i; cat $i | single_histogram; done | combine
+}
+
+git_additions() {
+	git diff --diff-filter AM $1 $2 | grep "^+[^+]" | single_histogram
+}
+
+
+LC_CTYPE=C
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+COMMAND=`basename $0 | tr - _`
+
+eval "$COMMAND $*"
